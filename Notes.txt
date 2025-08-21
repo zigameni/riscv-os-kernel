@@ -1,0 +1,100 @@
+Virtualna Masina za projekat - sa sajta. 
+
+Za projekat se koristi Emulator QEMU, `qemu.org` za dokumentaciju. 
+
+Koristimo i jos Cross Compiler koji generise masinski kod za RISCV arhitekturu. 
+    - `gcc`
+    - as, ld
+
+IDE koji koristimo je iz JetBrains, `CLion`.
+
+Od biblioteka, nas zadatak je da implementiramo Mem.lib i console.lib
+Dok hw.lib bice dostupna. Kao osnovni binarni interfejs ka ovoj masini. 
+
+Za make file imamo ikonu dole desno pored terminala unutar CLION
+
+Prvo pre nego sto pocnemo:
+- desni klik na src directory i kliknemo dole, mark directory as project sources and headers. 
+- desni klik na h directory i kliknemo dole, mark directory as project sources and headers. 
+
+
+In source directory create a main.c file. 
+
+`main.c`
+
+```cpp
+
+#include "../lib/console.h"
+
+void main() {
+    __putc('O');
+    __putc('S');
+    __putc('1');
+    __putc('\n');
+    __putc('\n');
+
+    while(1){
+        char character = __getc();
+        __putc(character+30); 
+    }
+}
+
+```
+
+Now we use make from the side to first `clean` the project. 
+
+Than we run `all` za prevodjenje. 
+
+Nakon sto smo ga preveli mozemo da ga pokrenemo koristi komandu `qemu`
+
+Ali mozemo da pokrenemo `clean` pa onda `qemu` komanda ce da prevede projekat sama. 
+
+Testiramo upis:
+    `333ccc`
+dobijemo:
+    `QQQaaa(`
+
+
+Vrsimo izvrsavanje programa koristeci terminal: make qemu
+
+after we are done we need a character sequence to stop the program from running. 
+
+`ctrl+a c`
+`quit`
+
+
+If we want to debug we use the command from the makefile: `qemu-gdb`
+
+After we have run `qemu-gdb` we co to Edit configuration and choose, `Remote Debug`, We give a name to the configuration. We select a GDB executable. usr/bin/gdb-multiarch. Than for the target we add the `localhost:26000`
+For the symbol file, we choose our `kernel` (no extenstion) file. 
+Root directory is the root of our project. 
+
+We run The configuration. 
+
+
+Step Over in gdb terminal is: `next`
+Asking for help is: `help`
+
+`info registers` we can see all the registers. 
+
+
+https://gcc.gnu.org/onlinedocs/gcc-11.2.0/gcc
+
+// example to watch:
+https://studentetfbgacrs-my.sharepoint.com/personal/sg160664d_student_etf_bg_ac_rs/_layouts/15/stream.aspx?id=%2Fpersonal%2Fsg160664d%5Fstudent%5Fetf%5Fbg%5Fac%5Frs%2FDocuments%2FETF%2FSNIMCI%20PREDAVANJA%2FSemestar%202%2Fg2%5Fs2%5FOS1%2FOS1%2Dvezbe%202022%2Fvezbe02%2Darhitektura%2Driscv%2Dnastavak%2Di%2Dadresiranje%2Dmemorije%2D1%2Fos1%2Dvezbe02%2Dzadatak03%2Emp4&referrer=StreamWebApp%2EWeb&referrerScenario=AddressBarCopied%2Eview%2E64c442e0%2Da86d%2D4fea%2D8016%2D7eaa65192d80
+
+
+Vrati se na vezbe 7, uzmi implementaticiju. 
+
+
+// sinhrona promena konsteksta, Vezbe 7, 2022
+https://studentetfbgacrs-my.sharepoint.com/personal/sg160664d_student_etf_bg_ac_rs/_layouts/15/stream.aspx?id=%2Fpersonal%2Fsg160664d%5Fstudent%5Fetf%5Fbg%5Fac%5Frs%2FDocuments%2FETF%2FSNIMCI%20PREDAVANJA%2FSemestar%202%2Fg2%5Fs2%5FOS1%2FOS1%2Dvezbe%202022%2Fvezbe07%2Dimpl%2Dprocesa%2Di%2Dniti%2D2%2Di%2Dsinhr%2Di%2Dkomun%2Dizmedju%2Dprocesa%2D1%2Fos1%2Dvezbe07%2Dzadatak06%2Driscv%2Dcontext%2Dswitch%2D1%2Dsynchronous%2Emp4&referrer=StreamWebApp%2EWeb&referrerScenario=AddressBarCopied%2Eview%2Ee73fe996%2D4b5f%2D41b5%2D8821%2Ddb93e9515854
+
+
+
+// asinhrona promena konteksta, supervisor mode. 
+https://studentetfbgacrs-my.sharepoint.com/personal/sg160664d_student_etf_bg_ac_rs/_layouts/15/stream.aspx?id=%2Fpersonal%2Fsg160664d%5Fstudent%5Fetf%5Fbg%5Fac%5Frs%2FDocuments%2FETF%2FSNIMCI%20PREDAVANJA%2FSemestar%202%2Fg2%5Fs2%5FOS1%2FOS1%2Dvezbe%202022%2Fvezbe07%2Dimpl%2Dprocesa%2Di%2Dniti%2D2%2Di%2Dsinhr%2Di%2Dkomun%2Dizmedju%2Dprocesa%2D1%2Fos1%2Dvezbe07%2Dzadatak07%2Driscv%2Dcontext%2Dswitch%2D2%2Dinterrupt%2Emp4&referrer=StreamWebApp%2EWeb&referrerScenario=AddressBarCopied%2Eview%2Ea009da51%2D42e4%2D406d%2D9e83%2Dbaf5c6431912
+
+
+
+
