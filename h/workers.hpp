@@ -5,6 +5,7 @@
 #ifndef OS1_VEZBE07_RISCV_CONTEXT_SWITCH_1_SYNCHRONOUS_WORKERS_HPP
 #define OS1_VEZBE07_RISCV_CONTEXT_SWITCH_1_SYNCHRONOUS_WORKERS_HPP
 
+// 2 corutines used in testing.
 extern void workerBodyA();
 
 extern void workerBodyB();

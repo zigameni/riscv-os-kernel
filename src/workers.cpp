@@ -25,7 +25,7 @@ void workerBodyA()
 
     printString("A: yield\n");
     __asm__ ("li t1, 7");
-    CCB::yield();
+    CCB::yield(); // yield predaje procesor nekoj drugoj corutini.
 
     uint64 t1 = 0;
     __asm__ ("mv %[t1], t1" : [t1] "=r"(t1));

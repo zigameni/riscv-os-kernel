@@ -18,11 +18,12 @@ public:
 
     void setFinished(bool value) { finished = value; }
 
+    // Pokazivac na jednu funkciju
     using Body = void (*)();
 
     static CCB *createCoroutine(Body body);
 
-    static void yield();
+    static void yield();//  koja poziva korutine da predaju procesor.
 
     static CCB *running;
 
@@ -40,12 +41,12 @@ private:
 
     struct Context
     {
-        uint64 ra;
-        uint64 sp;
+        uint64 ra; // gde treba da se vrati, dokle je stiglo
+        uint64 sp; // stack pointer
     };
 
     Body body;
-    uint64 *stack;
+    uint64 *stack;// pokazivac na niz lokacija u memoriju koji koristimo kao stek
     Context context;
     bool finished;
 

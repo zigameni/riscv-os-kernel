@@ -21,6 +21,7 @@ void CCB::yield()
     Riscv::popRegisters();
 }
 
+// trenutnom Corutinom zameni nekom drugom
 void CCB::dispatch()
 {
     CCB *old = running;
