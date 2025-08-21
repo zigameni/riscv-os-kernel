@@ -23,8 +23,8 @@ int main()
     threads[4] = TCB::createThread(workerBodyD);
     printString("ThreadD created\n");
 
-    Riscv::w_stvec((uint64) &Riscv::supervisorTrap);
-    Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
+    Riscv::w_stvec((uint64) &Riscv::supervisorTrap); // funkcija koja se zove kada imamo prekid
+    Riscv::ms_sstatus(Riscv::SSTATUS_SIE); // omogucimo prekide globalno
 
     while (!(threads[1]->isFinished() &&
              threads[2]->isFinished() &&

@@ -30,6 +30,7 @@ void TCB::dispatch()
 
 void TCB::threadWrapper()
 {
+    // supervisor previous privilege, supervizor previous interrupt enable
     Riscv::popSppSpie();
     running->body();
     running->setFinished(true);

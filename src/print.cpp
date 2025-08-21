@@ -8,6 +8,7 @@
 
 void printString(char const *string)
 {
+    // Zabranimo prekida dok ima print
     uint64 sstatus = Riscv::r_sstatus();
     Riscv::mc_sstatus(Riscv::SSTATUS_SIE);
     while (*string != '\0')
@@ -15,11 +16,14 @@ void printString(char const *string)
         __putc(*string);
         string++;
     }
+    // Omoguci prekide ponovo
     Riscv::ms_sstatus(sstatus & Riscv::SSTATUS_SIE ? Riscv::SSTATUS_SIE : 0);
 }
 
 void printInteger(uint64 integer)
 {
+
+    // Zabranimo prekida dok ima print
     uint64 sstatus = Riscv::r_sstatus();
     Riscv::mc_sstatus(Riscv::SSTATUS_SIE);
     static char digits[] = "0123456789";
@@ -46,5 +50,7 @@ void printInteger(uint64 integer)
         buf[i++] = '-';
 
     while (--i >= 0) { __putc(buf[i]); }
+
+    // Omoguci prekide ponovo
     Riscv::ms_sstatus(sstatus & Riscv::SSTATUS_SIE ? Riscv::SSTATUS_SIE : 0);
 }
