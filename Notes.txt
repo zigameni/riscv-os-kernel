@@ -47,6 +47,7 @@ Than we run `all` za prevodjenje.
 
 Nakon sto smo ga preveli mozemo da ga pokrenemo koristi komandu `qemu`
 
+
 Ali mozemo da pokrenemo `clean` pa onda `qemu` komanda ce da prevede projekat sama. 
 
 Testiramo upis:
@@ -65,7 +66,10 @@ after we are done we need a character sequence to stop the program from running.
 
 If we want to debug we use the command from the makefile: `qemu-gdb`
 
-After we have run `qemu-gdb` we co to Edit configuration and choose, `Remote Debug`, We give a name to the configuration. We select a GDB executable. usr/bin/gdb-multiarch. Than for the target we add the `localhost:26000`
+After we have run `qemu-gdb` we co to Edit configuration and choose,
+ `Remote Debug`, We give a name to the configuration.
+ We select a GDB executable. usr/bin/gdb-multiarch.
+ Than for the target we add the `localhost:26000`
 For the symbol file, we choose our `kernel` (no extenstion) file. 
 Root directory is the root of our project. 
 

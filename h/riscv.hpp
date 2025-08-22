@@ -14,6 +14,8 @@ public:
     // pop sstatus.spp and sstatus.spie bits (has to be a non inline function)
     static void popSppSpie();
 
+
+
     // read register scause
     static uint64 r_scause();
 
@@ -79,12 +81,74 @@ public:
     // supervisor trap
     static void supervisorTrap();
 
+    //stvec Vector "table"
+    static void stvecVectorTable();
+
+    //read a0 register
+    static uint64 r_a0();
+
+    //write to a0 register
+    static void w_a0(uint64 writeValue);
+
+    static void storeToStack(uint64 value);
+
+    // Write functions
+    static void writeA0(uint64 value);
+    static void writeA1(uint64 value);
+    static void writeA2(uint64 value);
+    static void writeA3(uint64 value);
+    static void writeA4(uint64 value);
+    static void writeA5(uint64 value);
+    static void writeA6(uint64 value);
+    static void writeA7(uint64 value);
+
+    // Read functions
+    static uint64 readA0();
+    static uint64 readA1();
+    static uint64 readA2();
+    static uint64 readA3();
+    static uint64 readA4();
+    static uint64 readA5();
+    static uint64 readA6();
+    static uint64 readA7();
+    
+    // // general function to read from a register.
+    // static uint64 readRegister(const char* registerName);
+    //
+    // // General function to write into a register
+    // static void writeToRegister(const char* registerName, uint64 value);
+
 private:
+
+    // static uint64 systemCalls(uint64 *arguments);
 
     // supervisor trap handler
     static void handleSupervisorTrap();
 
+    static void handleTimerInterrupt();
+
+    static void handleConsoleInterrupt();
+
+
+    // handle all system calls
+    uint64 static handleOperation(uint64 codeOperation);
+
 };
+
+
+// inline  uint64 readRegister(const char* registerName) {
+//     uint64 value;
+//     __asm__ volatile("mv %0, %s" : "=r"(value) : "s"(registerName));
+//     return value;
+// }
+//
+// inline void Riscv::writeToRegister(const char* registerName, uint64 value) {
+//     __asm__ volatile("mv %1s, %0" : : "s"(registerName), "r"(value));
+// }
+
+inline void Riscv::storeToStack(uint64 value) {
+    __asm__ volatile("sw %0, 80(fp)" : : "r"(value));
+}
 
 inline uint64 Riscv::r_scause()
 {
@@ -177,5 +241,100 @@ inline void Riscv::w_sstatus(uint64 sstatus)
 {
     __asm__ volatile ("csrw sstatus, %[sstatus]" : : [sstatus] "r"(sstatus));
 }
+
+//a0
+inline uint64 Riscv::r_a0()
+{
+    uint64 volatile a0;
+    __asm__ volatile ("mv %0, a0" : "=r"(a0));
+    return a0;
+}
+
+
+inline void Riscv::w_a0(uint64 writeValue) {
+    __asm__ volatile ("mv a0, %0" : : "r"(writeValue));
+}
+
+// Write functions
+inline void Riscv::writeA0(uint64 value) {
+    __asm__ volatile("mv a0, %0" : : "r"(value));
+}
+
+inline void Riscv::writeA1(uint64 value) {
+    __asm__ volatile("mv a1, %0" : : "r"(value));
+}
+
+inline void Riscv::writeA2(uint64 value) {
+    __asm__ volatile("mv a2, %0" : : "r"(value));
+}
+
+inline void Riscv::writeA3(uint64 value) {
+    __asm__ volatile("mv a3, %0" : : "r"(value));
+}
+
+inline void Riscv::writeA4(uint64 value) {
+    __asm__ volatile("mv a4, %0" : : "r"(value));
+}
+
+inline void Riscv::writeA5(uint64 value) {
+    __asm__ volatile("mv a5, %0" : : "r"(value));
+}
+
+inline void Riscv::writeA6(uint64 value) {
+    __asm__ volatile("mv a6, %0" : : "r"(value));
+}
+
+inline void Riscv::writeA7(uint64 value) {
+    __asm__ volatile("mv a7, %0" : : "r"(value));
+}
+
+// Read functions
+inline uint64 Riscv::readA0() {
+    uint64 value;
+    __asm__ volatile("mv %0, a0" : "=r"(value));
+    return value;
+}
+inline uint64 Riscv::readA1() {
+    uint64 value;
+    __asm__ volatile("mv %0, a1" : "=r"(value));
+    return value;
+}
+
+inline uint64 Riscv::readA2() {
+    uint64 value;
+    __asm__ volatile("mv %0, a2" : "=r"(value));
+    return value;
+}
+
+inline uint64 Riscv::readA3() {
+    uint64 value;
+    __asm__ volatile("mv %0, a3" : "=r"(value));
+    return value;
+}
+
+inline uint64 Riscv::readA4() {
+    uint64 value;
+    __asm__ volatile("mv %0, a4" : "=r"(value));
+    return value;
+}
+
+inline uint64 Riscv::readA5() {
+    uint64 value;
+    __asm__ volatile("mv %0, a5" : "=r"(value));
+    return value;
+}
+
+inline uint64 Riscv::readA6() {
+    uint64 value;
+    __asm__ volatile("mv %0, a6" : "=r"(value));
+    return value;
+}
+
+inline uint64 Riscv::readA7() {
+    uint64 value;
+    __asm__ volatile("mv %0, a7" : "=r"(value));
+    return value;
+}
+
 
 #endif //OS1_VEZBE07_RISCV_CONTEXT_SWITCH_2_INTERRUPT_RISCV_HPP

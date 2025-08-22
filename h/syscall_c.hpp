@@ -1,59 +1,50 @@
-//
-// Created by os on 8/21/25.
-//
+#ifndef syscall_c
+#define syscall_c
 
-#ifndef OS1_PROJEKAT_SYSCALL_C_HPP
-#define OS1_PROJEKAT_SYSCALL_C_HPP
-
-#include "tcb.hpp"
 #include "../lib/hw.h"
+#include "tcb.hpp"
+#include "../h/_Semaphore.hpp"
+#include "../h/constants.hpp"
 
-// 0x01
-void* mem_alloc (size_t size);
+void* mem_alloc(size_t size);
 
-// 0x02
-int mem_free (void*);
+int mem_free(void* p);
 
 typedef TCB* thread_t;
 
-// 0x11
-int thread_create (thread_t* handle, void(*start_routine)(void*), void* arg);
+int thread_create(
+    thread_t* handle, 
+    void (*start_routine)(void*), 
+    void* arg
+);
 
-// 0x12
-int thread_exit ();
+int thread_exit();
 
-// 0x13
-void thread_dispatch ();
+void thread_dispatch();
 
-// 0x21
-class _sem;
-typedef _sem* sem_t;
-int sem_open (sem_t* handle,unsigned init);
+void thread_join(thread_t handle);
 
-// 0x22
-int sem_close (sem_t handle);
+typedef _Semaphore* sem_t;
 
-// 0x23
-int sem_wait (sem_t id);
+int sem_open(sem_t* handle, unsigned init);
 
-// 0x24
-int sem_signal (sem_t id);
+int sem_close(sem_t handle);
 
-// 0x25
-int sem_timedwait(sem_t id,time_t timeout);
+int sem_wait(sem_t id);
 
-// 0x26
+int sem_signal(sem_t id);
+
 int sem_trywait(sem_t id);
 
-// 0x31
-typedef unsigned long time_t;
-int time_sleep (time_t);
+char getc();
 
-// 0x41
-const int EOF = -1;
-char getc ();
+void putc(char c);
 
-// 0x42
-void putc (char);
+int time_sleep(time_t time);
 
-#endif //OS1_PROJEKAT_SYSCALL_C_HPP
+int thread_create_without_start(thread_t* handle,
+                                void (*start_routine)(void*), void* arg);
+
+void thread_start(TCB* tcb);
+
+#endif //syscall_c
