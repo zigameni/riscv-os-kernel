@@ -1,4 +1,5 @@
 .idea
-build
-kernel
-kernel.asm
+/build
+kernel*
+.vscode
+
