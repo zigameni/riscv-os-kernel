@@ -1,9 +1,9 @@
 #include "printing.hpp"
 
-#define LEVEL_1_IMPLEMENTED 0
+#define LEVEL_1_IMPLEMENTED 1
 #define LEVEL_2_IMPLEMENTED 1
 #define LEVEL_3_IMPLEMENTED 1
-#define LEVEL_4_IMPLEMENTED 1
+#define LEVEL_4_IMPLEMENTED 0
 
 #if LEVEL_2_IMPLEMENTED == 1
 // TEST 1 (zadatak 2, niti C API i sinhrona promena konteksta)
@@ -30,8 +30,13 @@
 
 #endif
 
+#include "GetThreadId_test.hpp"
+#include "Resource_test.hpp"
+#include "Ping_test.hpp"
+#include "PrioritySemaphore_test.hpp"
+
 void userMain() {
-    printString("Unesite broj testa? [1-7]\n");
+    printString("Unesite broj testa? [1-11]\n");
     int test = getc() - '0';
     getc(); // Enter posle broja
 
@@ -99,6 +104,24 @@ void userMain() {
             printString("Test se nije uspesno zavrsio\n");
             printString("TEST 7 (zadatak 2., testiranje da li se korisnicki kod izvrsava u korisnickom rezimu)\n");
 #endif
+            break;
+        case 8:
+            GetThreadId_test();
+            printString("TEST 8 (GetThreadId system call test)\n");
+            break;
+//        case 9:
+//            Resource_test();
+//            printString("TEST 9 (Resource management test)\n");
+//            break;
+
+//        case 9:
+//            Ping_test();
+//            printString("TEST 10 (Ping system call test)\n");
+//            break;
+
+        case 9:
+            PrioritySemaphore_test();
+            printString("TEST 11 (Priority Semaphore test)\n");
             break;
         default:
             printString("Niste uneli odgovarajuci broj za test\n");

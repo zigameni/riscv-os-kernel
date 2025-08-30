@@ -133,3 +133,26 @@ int time_sleep(time_t time) {
     uint64 returnValue = Riscv::readA0();
     return (int)returnValue;
 }
+
+// Modifikacija za get Thread Id
+int getThreadId() {
+    Riscv::writeA0(SYSCALL_GET_THREAD_ID);
+    __asm__ volatile ("ecall");
+    uint64 returnValue = Riscv::readA0();
+    return (int)returnValue;
+}
+
+int ping(thread_t handle ){
+    Riscv::writeA1(reinterpret_cast<uint64>(handle));
+    Riscv::writeA0(SYSCALL_PING);
+    __asm__ volatile ("ecall");
+    uint64 returnValue = Riscv::readA0();
+    return (int)returnValue;
+}
+
+void SetMaximumThreads(int num_of_threads) {
+    TCB::setMaximumThreads(num_of_threads);
+}
+
+
+

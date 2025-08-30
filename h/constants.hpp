@@ -5,6 +5,8 @@
 #define SYSCALL_THREAD_CREATE 0x11 // Create a thread
 #define SYSCALL_THREAD_EXIT  0x12  // Exit a thread
 #define SYSCALL_THREAD_DISPATCH 0x13 // Dispatch a thread
+#define SYSCALL_GET_THREAD_ID 0x15 // Get thread id
+#define SYSCALL_PING 0x16 // Get thread id
 #define SYSCALL_SEM_OPEN   0x21  // Open a semaphore
 #define SYSCALL_SEM_CLOSE  0x22  // Close a semaphore
 #define SYSCALL_SEM_WAIT   0x23  // Wait on a semaphore

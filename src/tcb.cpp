@@ -11,10 +11,42 @@
 
 TCB *TCB::running = nullptr;
 // uint64 TCB::timeSliceCounter = 0;
+
+int TCB::maxThreads = 5;
+int TCB::activeThreadCount = 0;
+List<TCB> TCB::blockedThreads;
+
+void TCB::setMaximumThreads(int num_of_threads) {
+    if(num_of_threads>0){
+        maxThreads = num_of_threads;
+        printString("Maximum threads set to: ");
+        printInt(maxThreads);
+        printString("\n");
+    }else {
+        printString("Error: Invalid number of threads. Must be postive.");
+    }
+}
+
+
 TCB *TCB::createThread(Body body, void* arg)
 {
     TCB* newTCB = new TCB(body, arg);
-    Scheduler::put(newTCB);
+    newTCB->setStartTime(getCurrentTick());
+
+    // check if we can crete more threads
+    if(activeThreadCount< maxThreads){
+        // we can create the thread normally
+        activeThreadCount++;
+
+        Scheduler::put(newTCB);
+
+    }else {
+        newTCB->setBlocked(true);
+        blockedThreads.addLast(newTCB);
+    }
+
+
+//    Scheduler::put(newTCB);
     // If this is not the main thread, dispatch it immediately
     if (body != nullptr) {
         dispatch();
@@ -39,6 +71,30 @@ void TCB::yield()
 void TCB::dispatch()
 {
     TCB *old = running;
+
+
+    // Check if thread was pinged
+    if(old != nullptr && old->isPinged() && !old->isPingedReported()){
+        // calculate execution time
+        uint64 currentTime = getCurrentTick();
+        uint64 executionTime = currentTime- old->getStartTime();
+
+        printString("=== PING REPORT ===\n");
+        printString("Thread ID: ");
+        printInt(old->getThreadId());
+        printString("\n");
+        printString("Memory blocks allocated: ");
+        printInt(old->getMemoryBlocks());
+        printString("\n");
+        printString("Total execution time: ");
+        printInt(executionTime);
+        printString(" ticks\n");
+        printString("==================\n");
+
+        old->setPingedReported(true);
+    }
+
+
     if (!old->isFinished() && !old->isBlocked()) { Scheduler::put(old); }
     running = Scheduler::get();
 
@@ -85,6 +141,19 @@ void TCB::threadWrapper()
     Riscv::popSppSpie();
     running->body(running->arg);
     running->setFinished(true);
+
+    // decrese the thread count, and try to unblock a waiting thread.
+    activeThreadCount--;
+
+    if(blockedThreads.peekFirst() && activeThreadCount < maxThreads){
+        TCB* blockedThread = blockedThreads.removeFirst();
+        activeThreadCount++;
+        Scheduler::put(blockedThread);
+
+    }
+
+
+
     running->releaseAll();
     thread_dispatch();
 }
@@ -158,3 +227,10 @@ void TCB::updateSleepingThreads() {
     if(dispatchNeeded)dispatch();
 
 }
+
+static uint64 nextThreadId = 1;
+uint64 TCB::getNextThreadId() {
+    return nextThreadId++;
+}
+
+

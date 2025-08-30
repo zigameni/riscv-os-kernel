@@ -65,6 +65,8 @@ void Riscv::handleTimerInterrupt() {
     uint64 volatile sepc1 = r_sepc();
     uint64 volatile sstatus1 = r_sstatus();
 
+    extern void incrementTick();
+    incrementTick();
 
     // Clear the supervisor software interrupt pending bit
     mc_sip(SIP_SSIP);
@@ -158,6 +160,27 @@ uint64 Riscv::handleOperation(uint64 codeOperation)
             break;
         }
 
+        case SYSCALL_GET_THREAD_ID: {
+            // thread_join(handle)
+            returnValue = TCB::running->getThreadId();
+            TCB::dispatch();
+            break;
+        }
+
+        case SYSCALL_PING: {
+            // thread_join(handle)
+            TCB* targetThread;
+            targetThread = reinterpret_cast<TCB *>(Riscv::readA1());
+
+            if(targetThread!= nullptr){
+                targetThread->setPinged(true);
+                returnValue =  0;
+            }else {
+                returnValue = -1;
+            }
+
+            break;
+        }
         // SEMAPHORE CASES
         case SYSCALL_SEM_OPEN: {
             // sem_open

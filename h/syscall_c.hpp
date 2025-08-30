@@ -47,4 +47,11 @@ int thread_create_without_start(thread_t* handle,
 
 void thread_start(TCB* tcb);
 
+
+int getThreadId();
+
+int ping(thread_t handle);
+
+void SetMaximumThreads(int num_of_threads);
+
 #endif //syscall_c

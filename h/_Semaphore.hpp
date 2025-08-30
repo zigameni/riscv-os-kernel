@@ -36,6 +36,13 @@ private:
 
     void blockThread();   // Helper function to handle blocking
     void unblockThread(); // Helper function to handle unblocking
+
+    // Priority absed methods
+    // Add therad with priority
+    void addThreadWithPriority(TCB* thread);
+
+    // remove thread with heighst priority
+    TCB* removeHighestPriorityThread();
 };
 
 #endif

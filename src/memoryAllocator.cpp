@@ -1,7 +1,8 @@
 
 
 #include "../h/memoryAllocator.hpp"
-
+#include "../h/tcb.hpp"
+#include "../lib/hw.h"
 // Static member initialization
 char* MemoryAllocator::heap_start = 0;
 char* MemoryAllocator::heap_end = 0;
@@ -65,6 +66,13 @@ void* MemoryAllocator::mem_alloc(size_t size) {
 
     size_t* header = (size_t*)block;
     *header = size;
+
+    // Track memory allocation for threads
+    size_t numBlocks = (size + MEM_BLOCK_SIZE -1)/ MEM_BLOCK_SIZE;
+    if(TCB::running != nullptr){
+        TCB::running->addMemoryBlocks(numBlocks);
+    }
+
 
     return (void*)(header + 1);
 }

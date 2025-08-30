@@ -130,14 +130,56 @@ void _Semaphore::operator delete[](void *ptr) {
 }
 
 void _Semaphore::blockThread() {
-    blockedList.addLast(TCB::running); // Add current thread to blocked list
+//    blockedList.addLast(TCB::running); // Add current thread to blocked list
+    addThreadWithPriority(TCB::running);
     TCB::running->setBlocked(true);    // Mark the thread as blocked
     thread_dispatch();                // Yield the CPU
 }
 
 void _Semaphore::unblockThread() {
-    if (TCB* tcb = blockedList.removeFirst()) {
+    if (TCB* tcb = removeHighestPriorityThread()) {
         tcb->setBlocked(false);
         Scheduler::put(tcb); // Add the unblocked thread back to the scheduler
     }
+}
+
+void _Semaphore::addThreadWithPriority(TCB *thread) {
+    if(!thread) {
+        return;
+    }
+
+    if(!blockedList.peekFirst()){
+        blockedList.addFirst(thread);
+        return;
+    }
+
+    // Find correct position to insert
+    // Smaller thread ID = hiegher priorty
+    uint64 threadPriority = thread->getThreadId();
+
+    // check if thread has higher priority than the first one
+    if(threadPriority < blockedList.peekFirst()->getThreadId()){
+        blockedList.addFirst(thread);
+        return;
+    }
+
+    // Find corrent positon in the middle or end
+    List<TCB> tempList;
+
+    // Remove threads with heigher priorty than the new thread
+    while(blockedList.peekFirst() && blockedList.peekFirst()->getThreadId() < threadPriority){
+        tempList.addLast(blockedList.removeFirst());
+    }
+
+    // add the new thread
+    blockedList.addFirst(thread);
+
+    // add back the other ones
+    while(tempList.peekFirst()){
+        blockedList.addFirst(tempList.removeFirst());
+    }
+}
+
+TCB *_Semaphore::removeHighestPriorityThread() {
+    return blockedList.removeFirst();
 }

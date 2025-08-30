@@ -64,18 +64,45 @@ public:
     static const uint64 SLEEP_ERROR_INVALID_TIME = (uint64)-1;
     static const uint64 SLEEP_ERROR_MAIN_THREAD = (uint64)-2;
 
+
+    void setPinged(bool value){pinged = value;}
+    bool isPinged() const { return pinged; }
+    void setPingedReported(bool value) {pingedReported = value;}
+    bool isPingedReported()const {return pingedReported;}
+
+
+    // ThreadId Functionality
+    static uint64 getNextThreadId();
+    uint64 getThreadId() const {return threadId;}
+
+    // Set max num of threads
+    static void setMaximumThreads(int num_of_threads);
+    static int getMaximumThreads(){return maxThreads;}
+    static int getActiveThreadCount() {return activeThreadCount;}
+
+
+    // Mmeory and time tracking
+    void addMemoryBlocks(uint64 blocks){memoryBlocks += blocks;}
+    uint64 getMemoryBlocks()const {return memoryBlocks;}
+    void setStartTime(uint64 time) {startTime = time;}
+    uint64 getStartTime () const {return startTime;}
 private:
     TCB(Body body, void* arg) :
-    body(body),
-stack(body != nullptr ? new uint64[STACK_SIZE] : nullptr),
-context({(uint64) &threadWrapper,
-         stack != nullptr ? (uint64) &stack[STACK_SIZE] : 0
-        }),
-finished(false),
-blocked(false),
-main(body == nullptr),
-arg(arg),
-timeSleepCounter(0)
+        body(body),
+        stack(body != nullptr ? new uint64[STACK_SIZE] : nullptr),
+        context({(uint64) &threadWrapper,
+                 stack != nullptr ? (uint64) &stack[STACK_SIZE] : 0
+                }),
+        finished(false),
+        blocked(false),
+        main(body == nullptr),
+        arg(arg),
+        timeSleepCounter(0),
+        threadId(getNextThreadId()),
+        pinged(false),
+        pingedReported(false),
+        memoryBlocks(0),
+        startTime(0)
 
     {}
 
@@ -99,6 +126,12 @@ timeSleepCounter(0)
     time_t timeSleepCounter;
     static List<TCB> sleepingThreads;
 
+    // Threads
+    static int maxThreads;
+    static int activeThreadCount;
+    static List<TCB> blockedThreads;
+
+
     friend class Riscv;
 
     static void threadWrapper();
@@ -111,6 +144,21 @@ timeSleepCounter(0)
     void releaseAll();
     static void updateSleepingThreads();
     static uint64 constexpr STACK_SIZE = 1024;
+
+    uint64 threadId;
+    // ThreadId Functionality
+//    static uint64 getNextThreadId();
+//    uint64 getThreadId() const {return threadId;}
+
+
+    bool pinged;
+    bool pingedReported;
+
+    // Memory and time tracking
+    uint64 memoryBlocks;
+    uint64 startTime; // start time of thread
+
+
 };
 
 #endif //OS1_VEZBE07_RISCV_CONTEXT_SWITCH_2_INTERRUPT_TCB_HPP
